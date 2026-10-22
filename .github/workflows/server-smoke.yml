@@ -33,10 +33,27 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes steamcmd
       - name: Install Project Zomboid dedicated server
         run: |
-          steamcmd \
-            +force_install_dir "$RUNNER_TEMP/pz-server" \
-            +login anonymous \
-            +app_update 380870 validate \
-            +quit
+          install_dir="$RUNNER_TEMP/pz-server"
+          for attempt in 1 2 3; do
+            echo "SteamCMD install attempt $attempt of 3"
+            if steamcmd \
+              +force_install_dir "$install_dir" \
+              +login anonymous \
+              +app_update 380870 validate \
+              +quit; then
+              break
+            fi
+
+            if [[ "$attempt" == 3 ]]; then
+              echo "SteamCMD failed to install Project Zomboid dedicated server after 3 attempts" >&2
+              exit 1
+            fi
+            sleep 20
+          done
+
+          if [[ ! -x "$install_dir/start-server.sh" ]]; then
+            echo "SteamCMD completed without installing start-server.sh into $install_dir" >&2
+            exit 1
+          fi
       - name: Start server with this mod enabled
         run: bash .github/scripts/server-smoke.sh "$RUNNER_TEMP/pz-server"
