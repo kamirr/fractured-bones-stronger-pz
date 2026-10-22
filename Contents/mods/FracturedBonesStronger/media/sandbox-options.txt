@@ -9,3 +9,11 @@ option FracturedBonesStronger.PreventionChance
 	page = FBS_Page,
 	translation = FBS_PreventionChance,
 }
+
+option FracturedBonesStronger.EnableTestCommands
+{
+	type = boolean,
+	default = false,
+	page = FBS_Page,
+	translation = FBS_EnableTestCommands,
+}

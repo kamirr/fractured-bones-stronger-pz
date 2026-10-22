@@ -2,4 +2,6 @@ Sandbox_EN = {
 	Sandbox_FBS_Page = "Fractured Bones Stronger",
 	Sandbox_FBS_PreventionChance = "Fracture prevention chance",
 	Sandbox_FBS_PreventionChance_tooltip = "Chance to prevent another fracture to a body part after its first fracture has healed. Repeated fractures do not increase this chance.",
+	Sandbox_FBS_EnableTestCommands = "Enable fracture test commands",
+	Sandbox_FBS_EnableTestCommands_tooltip = "Allows admins to use /fbs chat commands to force, heal, reset, and test fractures. Keep disabled during normal play.",
 }

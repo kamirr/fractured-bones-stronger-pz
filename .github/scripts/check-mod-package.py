@@ -47,8 +47,21 @@ def main() -> None:
     )
     if not all(value in sandbox_options for value in expected_option):
         raise SystemExit("PreventionChance must be an integer sandbox option from 0 to 100, defaulting to 50")
+    expected_test_option = (
+        "option FracturedBonesStronger.EnableTestCommands",
+        "type = boolean,",
+        "default = false,",
+    )
+    if not all(value in sandbox_options for value in expected_test_option):
+        raise SystemExit("EnableTestCommands must be a default-off boolean sandbox option")
     translations = SANDBOX_TRANSLATIONS.read_text(encoding="utf-8")
-    for key in ("Sandbox_FBS_Page", "Sandbox_FBS_PreventionChance", "Sandbox_FBS_PreventionChance_tooltip"):
+    for key in (
+        "Sandbox_FBS_Page",
+        "Sandbox_FBS_PreventionChance",
+        "Sandbox_FBS_PreventionChance_tooltip",
+        "Sandbox_FBS_EnableTestCommands",
+        "Sandbox_FBS_EnableTestCommands_tooltip",
+    ):
         if key not in translations:
             raise SystemExit(f"Missing sandbox translation: {key}")
 
