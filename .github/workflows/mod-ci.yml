@@ -1,0 +1,48 @@
+name: Mod CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Contents/mods/**"
+      - "tests/**"
+      - ".github/scripts/**"
+      - ".github/workflows/**"
+      - "README.md"
+  pull_request:
+    paths:
+      - "Contents/mods/**"
+      - "tests/**"
+      - ".github/scripts/**"
+      - ".github/workflows/**"
+      - "README.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Validate mod package
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check package metadata and layout
+        run: python3 .github/scripts/check-mod-package.py
+
+  lua-checks:
+    name: Test and parse Lua
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1 compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes lua5.1
+      - name: Test fracture prevention behavior
+        run: lua5.1 tests/test_fracture_protection.lua
+      - name: Parse every mod Lua file
+        run: |
+          while IFS= read -r -d '' file; do
+            luac5.1 -p "$file"
+          done < <(find Contents/mods tests -type f -name '*.lua' -print0)

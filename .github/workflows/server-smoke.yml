@@ -1,0 +1,42 @@
+name: Dedicated Server Smoke Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Contents/mods/**"
+      - ".github/scripts/server-smoke.sh"
+      - ".github/workflows/server-smoke.yml"
+  pull_request:
+    paths:
+      - "Contents/mods/**"
+      - ".github/scripts/server-smoke.sh"
+      - ".github/workflows/server-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  server-smoke:
+    name: Load mod on dedicated server
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SteamCMD
+        run: |
+          sudo dpkg --add-architecture i386
+          echo "steam steam/question select I AGREE" | sudo debconf-set-selections
+          echo "steam steam/license note ''" | sudo debconf-set-selections
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes steamcmd
+      - name: Install Project Zomboid dedicated server
+        run: |
+          steamcmd \
+            +force_install_dir "$RUNNER_TEMP/pz-server" \
+            +login anonymous \
+            +app_update 380870 validate \
+            +quit
+      - name: Start server with this mod enabled
+        run: bash .github/scripts/server-smoke.sh "$RUNNER_TEMP/pz-server"

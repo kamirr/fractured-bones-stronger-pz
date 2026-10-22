@@ -1,0 +1,11 @@
+VERSION = 1,
+
+option FracturedBonesStronger.PreventionChance
+{
+	type = integer,
+	default = 50,
+	min = 0,
+	max = 100,
+	page = FBS_Page,
+	translation = FBS_PreventionChance,
+}
