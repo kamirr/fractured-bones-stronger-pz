@@ -34,6 +34,10 @@ jobs:
       - name: Install Project Zomboid dedicated server
         run: |
           install_dir="$RUNNER_TEMP/pz-server"
+          # A fresh SteamCMD installation self-updates and restarts. Warm it
+          # up in a separate invocation so app metadata is available next time.
+          steamcmd +login anonymous +quit || true
+
           for attempt in 1 2 3; do
             echo "SteamCMD install attempt $attempt of 3"
             if steamcmd \
